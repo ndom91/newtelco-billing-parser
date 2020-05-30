@@ -16,7 +16,7 @@
 .noteWrapper {
   padding: 15px;
   border-radius: 5px;
-  border: 2px dashed #eaeaea;
+  border: 2px dashed var(--primary-color);
   text-align: center;
 }
 
