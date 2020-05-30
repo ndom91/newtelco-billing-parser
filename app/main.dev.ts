@@ -132,6 +132,18 @@ ipcMain.on('app-quit', (event, arg) => {
 
 ipcMain.on('open-about', (event, arg) => {
   openAboutWindow({
-    icon_path: '../resources/icons/48x48.png'
+    icon_path: '../resources/icons/48x48.png',
+    product_name: 'Newtelco Billing Parser',
+    bug_report_url: 'https://git.newtelco.dev/newtelco/billing-parser-1/issue',
+    copyright: '2020 Newtelco GmbH',
+    homepage: 'https://git.newtelco.dev',
+    description: 'Newtelco Billing Comparison Tool',
+    license: 'MIT',
+    adjust_window_size: true,
+    win_options: {
+      width: 520,
+      height: 340
+    },
+    show_close_button: 'true'
   });
 });
