@@ -1,8 +1,8 @@
 {
-  "name": "electron-react-boilerplate",
-  "productName": "ElectronReact",
-  "version": "1.1.0",
-  "description": "Electron application boilerplate based on React, React Router, Webpack, React Hot Loader for rapid application development",
+  "name": "newtelco-billing-parser",
+  "productName": "NewtelcoBilling",
+  "version": "0.0.1",
+  "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
     "build-dll": "cross-env NODE_ENV=development webpack --config ./configs/webpack.config.renderer.dev.dll.babel.js --colors",
@@ -52,8 +52,8 @@
     ]
   },
   "build": {
-    "productName": "ElectronReact",
-    "appId": "org.develar.ElectronReact",
+    "productName": "Newtelco Billing Verification",
+    "appId": "org.newtelco.billingparser",
     "files": [
       "dist/",
       "node_modules/",
@@ -96,8 +96,8 @@
     },
     "publish": {
       "provider": "github",
-      "owner": "electron-react-boilerplate",
-      "repo": "electron-react-boilerplate",
+      "owner": "newtelco",
+      "repo": "billing-parser",
       "private": false
     }
   },
@@ -106,39 +106,24 @@
     "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
   },
   "author": {
-    "name": "Electron React Boilerplate Maintainers",
-    "email": "electronreactboilerplate@gmail.com",
-    "url": "https://electron-react-boilerplate.js.org"
+    "name": "Nico Domino",
+    "email": "ndomino@newtelco.de",
+    "url": "https://git.newtelco.dev/newtelco/billing-parser"
   },
-  "contributors": [
-    {
-      "name": "Vikram Rangaraj",
-      "email": "vikr01@icloud.com",
-      "url": "https://github.com/vikr01"
-    },
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/electron-react-boilerplate/electron-react-boilerplate/issues"
+    "url": "https://git.newtelco.dev/newtelco/billing-parser/issues"
   },
   "keywords": [
     "electron",
-    "boilerplate",
     "react",
     "redux",
     "typescript",
     "ts",
     "sass",
-    "webpack",
-    "hot",
-    "reload"
+    "webpack"
   ],
-  "homepage": "https://github.com/electron-react-boilerplate/electron-react-boilerplate#readme",
+  "homepage": "https://git.newtelco.dev/newtelco/billing-parser#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
@@ -298,9 +283,6 @@
     "npm": ">=4.x",
     "yarn": ">=0.21.3"
   },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
-  },
   "browserslist": [
     "extends browserslist-config-erb"
   ],
@@ -318,7 +300,11 @@
         }
       }
     ],
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "semi": false,
+    "jsxSingleQuote": true,
+    "arrowParens": "avoid"
   },
   "stylelint": {
     "extends": [
