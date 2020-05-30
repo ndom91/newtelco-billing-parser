@@ -1,0 +1,50 @@
+/*
+ * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+ *        See https://github.com/webpack-contrib/sass-loader#imports
+ */
+@import '~@fortawesome/fontawesome-free/css/all.css';
+@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai:wght@300;500;700&family=Montserrat:wght@200;400&display=swap');
+
+:root {
+  --font-body: 'Montserrat';
+  --font-header: 'Hind Madurai';
+  --primary-color: #67b246;
+}
+
+body {
+  position: relative;
+  color: #585858;
+  height: 100vh;
+  background-color: #fff;
+  font-family: var(--font-body), Arial, Helvetica, Helvetica Neue, serif;
+  font-weight: 200;
+  overflow-y: hidden;
+}
+
+h2 {
+  margin: 0;
+  font-size: 2.25rem;
+  font-weight: bold;
+  letter-spacing: -0.025em;
+  color: #585858;
+}
+
+p {
+  font-size: 24px;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: #585858;
+  opacity: 0.75;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+  cursor: pointer;
+}

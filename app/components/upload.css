@@ -1,0 +1,58 @@
+.dragWrapper {
+  margin: 0 auto !important;
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  border: 2px dashed #bebebe;
+  padding: 20px;
+}
+.fileItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.noteWrapper {
+  padding: 15px;
+  border-radius: 5px;
+  border: 2px dashed #eaeaea;
+  text-align: center;
+}
+
+.buttonWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 80px;
+  border-radius: 5px;
+}
+.fileList {
+  list-style: none;
+  width: 80%;
+}
+.fileButton {
+  background-color: transparent;
+  font-family: var(--font-header);
+  font-weight: 400;
+  color: var(--primary-color);
+  padding: 5px;
+  border: 1px solid var(--primary-color);
+}
+.fileButton:active,
+.fileButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(103, 178, 70, 0.39);
+}
+.fileButton:first-child {
+  border-radius: 5px 5px 0 0;
+  border-bottom: none;
+}
+.fileButton:last-child {
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+}
+.fileButton:hover {
+  background-color: var(--primary-color);
+  color: #fff;
+  cursor: pointer;
+}
