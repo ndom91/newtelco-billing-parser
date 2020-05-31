@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 import styles from './Home.css'
-import Upload from './upload'
+import Filezone from './File'
 
 const Home = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
 
   useEffect(() => {
     const body = document.querySelector('body')
-    if (sidebarVisible) {
-      body.classList.add('shazam')
-    } else {
-      body.classList.remove('shazam')
+    if (body) {
+      if (sidebarVisible) {
+        body.classList.add('shazam')
+      } else {
+        body.classList.remove('shazam')
+      }
     }
   }, [sidebarVisible])
 
@@ -30,7 +32,8 @@ const Home = () => {
         style={{ margin: '10px', width: 'calc(100% - 20px)' }}
       >
         <div className={styles.headerWrapper}>
-          <span
+          <button
+            type='button'
             className={styles.menuIcon}
             onClick={() => setSidebarVisible(!sidebarVisible)}
           >
@@ -46,33 +49,33 @@ const Home = () => {
             >
               <path d='M4 6h16M4 12h8m-8 6h16' />
             </svg>
-          </span>
+          </button>
           <span className={styles.headerText}>
             <h2 className={styles.header}>Billing Verification</h2>
           </span>
         </div>
-        <Upload />
+        <Filezone />
       </div>
       <ul className='menu_items'>
         <li>
-          <a>
+          <button type='button'>
             <i className='icon fa fa-book fa-lg' />
             History
-          </a>
+          </button>
         </li>
         <li>
-          <a onClick={quitApplication}>
+          <button type='button' onClick={quitApplication}>
             <i className='icon fa fa-sign-out-alt fa-lg' />
             Quit
-          </a>
+          </button>
         </li>
       </ul>
       <ul className='menu_items_right'>
         <li>
-          <a onClick={openAbout}>
+          <button type='button' onClick={openAbout}>
             About
             <i className='icon fa fa-question fa-lg' />
-          </a>
+          </button>
         </li>
       </ul>
     </>

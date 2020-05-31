@@ -124,21 +124,16 @@ const onOpen = data => {
 app.on('open-file', onOpen)
 app.on('open-url', onOpen)
 
-ipcMain.on('app-quit', (event, arg) => {
+ipcMain.on('app-quit', () => {
   if (process.platform !== 'darwin') {
     app.exit()
   }
 })
 
-// Update Work Progress on Search / Match / Export
-function onProgress(progess) {
-  // Use values 0 to 1, or -1 to hide the progress bar
-  win.setProgressBar(progress || -1) // Progress bar works on all platforms
-}
-
-ipcMain.on('open-about', (event, arg) => {
+ipcMain.on('open-about', () => {
   openAboutWindow({
-    icon_path: '/opt/newtelco/billing-parser-1/resources/icons/256x256.png',
+    icon_path: path.join(__dirname, '/../resources/icons/256x256.png'),
+    package_json_dir: path.join(__dirname, '/../'),
     product_name: 'Newtelco Billing Parser',
     bug_report_url: 'https://git.newtelco.dev/newtelco/billing-parser-1/issue',
     copyright: '2020 Newtelco GmbH',
@@ -151,6 +146,5 @@ ipcMain.on('open-about', (event, arg) => {
       height: 380,
     },
     show_close_button: 'Close',
-    package_json_dir: '/opt/newtelco/billing-parser-1/',
   })
 })

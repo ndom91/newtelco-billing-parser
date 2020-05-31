@@ -169,9 +169,11 @@ a:hover {
 .menu_items li:nth-child(2) {
   margin-left: 30px;
 }
-.menu_items_right a,
-.menu_items a {
+.menu_items_right button,
+.menu_items button {
   display: block;
+  border: none;
+  background-color: transparent;
   text-decoration: none;
   text-transform: uppercase;
   letter-spacing: 2px;
@@ -180,19 +182,8 @@ a:hover {
   -webkit-transition: color 0.2s;
   transition: color 0.2s;
 }
-.menu_items_right a .icon,
-.menu_items a .icon {
-  position: relative;
-  display: inline-block;
-  margin-right: 25px;
-  color: #bcbcbc;
-}
-.menu_items_right a .icon {
-  margin-right: 0;
-  margin-left: 25px;
-}
-.menu_items_right a .icon::after,
-.menu_items a .icon::after {
+.menu_items_right button .icon::after,
+.menu_items button .icon::after {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -207,16 +198,41 @@ a:hover {
   -webkit-transition: border-color 0.2s;
   transition: border-color 0.2s;
 }
-.menu_items_right a:hover,
-.menu_items a:hover {
-  color: var(--primary-color);
+.menu_items_right button:focus,
+.menu_items_right button:active,
+.menu_items button:focus,
+.menu_items button:active {
+  outline: none;
 }
-.menu_items_right a:hover .icon::after,
-.menu_items a:hover .icon::after {
+.menu_items_right button:focus .icon::after,
+.menu_items_right button:active .icon::after,
+.menu_items button:focus .icon::after,
+.menu_items button:active .icon::after {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(103, 178, 70, 0.39);
+}
+.menu_items_right button .icon,
+.menu_items button .icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 25px;
+  color: #bcbcbc;
+}
+.menu_items_right button .icon {
+  margin-right: 0;
+  margin-left: 25px;
+}
+.menu_items_right button:hover,
+.menu_items button:hover {
+  color: var(--primary-color);
+  cursor: pointer;
+}
+.menu_items_right button:hover .icon::after,
+.menu_items button:hover .icon::after {
   border-color: var(--primary-color);
 }
-.menu_items_right a:active .icon,
-.menu_items a:active .icon {
+.menu_items_right button:active .icon,
+.menu_items button:active .icon {
   color: var(--primary-color);
 }
 

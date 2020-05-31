@@ -1,20 +1,3 @@
-@media screen and (prefers-color-scheme: light),
-  screen and (prefers-color-scheme: no-preference) {
-  /* Light theme */
-  body {
-    color: #000;
-    background-color: #fff;
-  }
-}
-
-@media screen and (prefers-color-scheme: dark) {
-  /* Dark theme */
-  body {
-    color: #fff;
-    background-color: #000;
-  }
-}
-
 h1 {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 21px;
@@ -44,11 +27,13 @@ h1 {
 }
 .menuIcon {
   width: 64px;
+  background-color: transparent;
+  border: none;
+}
+.menuIcon:hover {
+  cursor: pointer;
 }
 .menuIcon:active .menuIcon:focus {
   outline: none;
   box-shadow: 0 0 0 2px rgba(103, 178, 70, 0.39);
-}
-.menuIcon:hover {
-  cursor: pointer;
 }

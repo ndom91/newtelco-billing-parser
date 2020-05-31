@@ -1,10 +1,11 @@
 import React, { useMemo, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
-import styles from './upload.css'
+import path from 'path'
+import * as fs from 'fs'
 import q from '../utils/db'
 import objDiff from '../utils/objDiff'
+import styles from './File.css'
 
-const fs = require('fs')
 const { dialog } = require('electron').remote
 const ExcelJS = require('exceljs')
 
@@ -39,19 +40,19 @@ const rejectStyle = {
 }
 
 type File = {
-  file: {
-    lastModified: number
-    lastModifiedDate: Date
-    name: string
-    path: string
-    size: number
-    type: string
-    webkitRelativePath: string
-  }[]
+  lastModified: number
+  lastModifiedDate: Date
+  name: string
+  path: string
+  size: number
+  type: string
+  webkitRelativePath: string
 }
 
-const Upload = () => {
-  const [myFiles, setMyFiles] = useState<File>([])
+type FileArr = File[]
+
+const Filezone = () => {
+  const [myFiles, setMyFiles] = useState<FileArr>([])
   const [working, setWorking] = useState(false)
   const [saveModal, setSaveModal] = useState(false)
   const [workbook, setWorkbook] = useState({})
@@ -59,16 +60,16 @@ const Upload = () => {
     setMyFiles([...myFiles, ...acceptedFiles])
   }, [])
 
-  const removeFile = file => () => {
+  const removeFile = (file: File) => () => {
     const newFiles = [...myFiles]
     newFiles.splice(newFiles.indexOf(file), 1)
     setMyFiles(newFiles)
   }
 
-  const handleCompare = async (path: string, type: string) => {
+  const handleCompare = async (filePath: string, type: string) => {
     setWorking(true)
     const inputWorkbook = new ExcelJS.Workbook()
-    const data = await fs.promises.readFile(path)
+    const data = await fs.promises.readFile(filePath)
     const wb = await inputWorkbook.xlsx.load(data.buffer)
     if (type === 'itenos') {
       const orders = {}
@@ -174,45 +175,29 @@ const Upload = () => {
   }
 
   const saveDiffExcel = async () => {
-    // await workbook.save
-    // const buffer = await workbook.xlsx.writeBuffer()
     const saveDialog = await dialog.showSaveDialog({
       title: 'Save Billing Descrepencies',
       defaultPath: `itenos_compare_${new Date().toLocaleDateString(
         'de-DE'
       )}.xlsx`,
     })
-    if (!saveDialog.cancelled) {
+    if (!saveDialog.canceled) {
       const saveBuffer = await workbook.xlsx.writeBuffer(saveDialog.filePath)
       fs.writeFile(saveDialog.filePath, saveBuffer, err => {
         if (err) console.error(err)
       })
+      setSaveModal(false)
     }
   }
-
-  // const newworksheet = newWorkbook.getWorksheet('My Sheet')
-  // newworksheet.columns = [
-  //   { header: 'Id', key: 'id', width: 10 },
-  //   { header: 'Name', key: 'name', width: 32 },
-  //   { header: 'D.O.B.', key: 'dob', width: 15 },
-  // ]
-  // await newworksheet.addRow({
-  //   id: 3,
-  //   name: 'New Guy',
-  //   dob: new Date(2000, 1, 1),
-  // })
-
-  // await newWorkbook.xlsx.writeFile('export2.xlsx')
-  // }
 
   const onDropRejected = useCallback(data => {
     if (data[0].errors[0].code === 'file-invalid-type') {
       new Notification('Newtelco', {
         body: 'Only Excel files allowed',
-        icon: '../assets/img/icons/nt-512-grey.png',
+        icon: path.join(__dirname, '../resources/icons/64x64.png'),
       })
     }
-  })
+  }, [])
 
   const {
     getRootProps,
@@ -229,7 +214,7 @@ const Upload = () => {
     ],
   })
 
-  const files = myFiles.map(file => (
+  const files = myFiles.map((file: File) => (
     <li key={file.path} className={styles.fileItem}>
       <span>{file.name}</span>
       <div className={styles.buttonWrapper}>
@@ -338,4 +323,4 @@ const Upload = () => {
   )
 }
 
-export default Upload
+export default Filezone
