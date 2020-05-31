@@ -25,13 +25,16 @@ const config = {
   database: process.env.MSSQL_DB,
 }
 
-const db = mssql.connect(config)
+mssql.connect(config)
 
 const q = async query => {
   try {
     const results = await mssql.query(query)
     return results
   } catch (error) {
+    new Notification('Error', {
+      body: 'Error connecting to database',
+    })
     return { error }
   }
 }

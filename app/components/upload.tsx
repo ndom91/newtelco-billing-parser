@@ -2,8 +2,10 @@ import React, { useMemo, useState, useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styles from './upload.css'
 import q from '../utils/db'
+import objDiff from '../utils/objDiff'
 
 const fs = require('fs')
+const { dialog } = require('electron').remote
 const ExcelJS = require('exceljs')
 
 const baseStyle = {
@@ -15,7 +17,7 @@ const baseStyle = {
   justifyContent: 'center',
   padding: '20px',
   borderWidth: 2,
-  borderRadius: 2,
+  borderRadius: 5,
   borderColor: '#eeeeee',
   borderStyle: 'dashed',
   backgroundColor: '#fafafa',
@@ -51,19 +53,10 @@ type File = {
 const Upload = () => {
   const [myFiles, setMyFiles] = useState<File>([])
   const [working, setWorking] = useState(false)
+  const [saveModal, setSaveModal] = useState(false)
+  const [workbook, setWorkbook] = useState({})
   const onDrop = useCallback(acceptedFiles => {
     setMyFiles([...myFiles, ...acceptedFiles])
-    // acceptedFiles.forEach(file => {
-    //   const reader = new FileReader()
-
-    //   reader.onabort = () => console.log('file reading was aborted')
-    //   reader.onerror = () => console.log('file reading has failed')
-    //   reader.onload = () => {
-    //     const binaryStr = reader.result
-    //     // console.log(binaryStr)
-    //   }
-    //   reader.readAsArrayBuffer(file)
-    // })
   }, [])
 
   const removeFile = file => () => {
@@ -72,64 +65,145 @@ const Upload = () => {
     setMyFiles(newFiles)
   }
 
-  // const removeAll = () => {
-  //   setMyFiles([]);
-  // };
-
   const handleCompare = async (path: string, type: string) => {
     setWorking(true)
-    const workbook = new ExcelJS.Workbook()
+    const inputWorkbook = new ExcelJS.Workbook()
     const data = await fs.promises.readFile(path)
-    const wb = await workbook.xlsx.load(data.buffer)
+    const wb = await inputWorkbook.xlsx.load(data.buffer)
     if (type === 'itenos') {
       const orders = {}
       wb.eachSheet((worksheet, sheetId: number) => {
-        console.log(sheetId)
-        orders[sheetId] = []
-        worksheet.eachRow((row, rowNumber) => {
-          // console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
-          if (typeof row.values[1] === 'number') {
-            orders[sheetId].push({
-              order: row.values[2],
-              po: row.values[3],
-              mrc: row.values[5],
-            })
-          }
-        })
-      })
-      console.log(orders)
-      Object.values(orders).forEach(sheet => {
-        const orderQuery = sheet.map(row => {
-          return row.order
-        })
-        if (orderQuery.length) {
-          q(`select distinct Nummer, SummeNetto 
-            from BestKopf2 
-            where Nummer in (${orderQuery.join(', ')})`)
-            .then(resp => {
-              console.log(resp)
-              return resp
-            })
-            .catch(err => console.error(err))
+        if (worksheet.state === 'visible' && worksheet.name.charAt(0) === '3') {
+          orders[sheetId] = { name: worksheet.name, values: [] }
+          worksheet.eachRow(row => {
+            if (typeof row.values[1] === 'number') {
+              orders[sheetId].values.push({
+                Nummer: row.values[2],
+                SummeNetto: row.values[5],
+              })
+            }
+          })
         }
       })
+      const returnData = []
+      for await (const sheet of Object.values(orders)) {
+        const orderQuery = sheet.values.map(row => {
+          return row.Nummer
+        })
+        if (orderQuery.length) {
+          const orderIdQuery = await q(`
+            select I3D, Nummer 
+            from BestKopf2 
+            where AktuelleVersion = 1 
+            and Nummer in (${orderQuery.join(', ')})
+          `)
+          const orderIds = orderIdQuery.recordset.map(row => {
+            return row.I3D
+          })
+          const positionIds = await q(`
+            select 
+              I3D, 
+              BestKopfI3D,
+              preis
+            from BestPos2
+            where BestKopfI3D in (${orderIds.join(', ')})
+            and Text like '%MRC%'
+          `)
+          const map = new Map()
+          orderIdQuery.recordset.forEach(item => map.set(item.I3D, item))
+          positionIds.recordset.forEach(item =>
+            map.set(item.BestKopfI3D, { ...map.get(item.BestKopfI3D), ...item })
+          )
+          const mergedArr = Array.from(map.values())
+          const dbValues = mergedArr.map(item => {
+            return { Nummer: item.Nummer, SummeNetto: item.preis }
+          })
+          const correctWorksheet = Object.values(orders).find(
+            order => order.name === dbValues[0].Nummer.toString().substr(0, 3)
+          )
+          const diff = objDiff(dbValues, correctWorksheet.values)
+          returnData.push({ sheetName: sheet.name, diff })
+        }
+      }
+      const returnWorkbook = new ExcelJS.Workbook()
+      returnData
+        .sort((a, b) => {
+          if (a.sheetName < b.sheetName) {
+            return -1
+          }
+          return 1
+        })
+        .forEach(ws => {
+          const sheet = returnWorkbook.addWorksheet(ws.sheetName)
+          sheet.columns = [
+            { header: 'Order', key: 'order', width: 12 },
+            { header: 'Excel Value', key: 'excel', width: 15 },
+            {
+              header: 'Centron Value',
+              key: 'centron',
+              width: 15,
+            },
+          ]
+          ws.diff.forEach(async row => {
+            await sheet.addRow({
+              order: row.order,
+              excel: row.excel,
+              centron: row.centron,
+            })
+          })
+          sheet.getRow(1).font = { bold: true }
+          sheet.getCell('A1').alignment = { horizontal: 'center' }
+          sheet.getCell('B1').alignment = { horizontal: 'center' }
+          sheet.getCell('C1').alignment = { horizontal: 'center' }
+          sheet.getCell('A1').border = { bottom: { style: 'thin' } }
+          sheet.getCell('B1').border = { bottom: { style: 'thin' } }
+          sheet.getCell('C1').border = { bottom: { style: 'thin' } }
+          sheet.getColumn(2).numFmt = '"€"#,##0.00;'
+          sheet.getColumn(3).numFmt = '"€"#,##0.00;'
 
+          sheet.autoFilter = {
+            from: 'A1',
+            to: 'C1',
+          }
+        })
+      console.log(returnWorkbook)
+      setWorkbook(returnWorkbook)
       setWorking(false)
+      setSaveModal(true)
     }
-    // const newworksheet = newWorkbook.getWorksheet('My Sheet')
-    // newworksheet.columns = [
-    //   { header: 'Id', key: 'id', width: 10 },
-    //   { header: 'Name', key: 'name', width: 32 },
-    //   { header: 'D.O.B.', key: 'dob', width: 15 },
-    // ]
-    // await newworksheet.addRow({
-    //   id: 3,
-    //   name: 'New Guy',
-    //   dob: new Date(2000, 1, 1),
-    // })
-
-    // await newWorkbook.xlsx.writeFile('export2.xlsx')
   }
+
+  const saveDiffExcel = async () => {
+    // await workbook.save
+    // const buffer = await workbook.xlsx.writeBuffer()
+    const saveDialog = await dialog.showSaveDialog({
+      title: 'Save Billing Descrepencies',
+      defaultPath: `itenos_compare_${new Date().toLocaleDateString(
+        'de-DE'
+      )}.xlsx`,
+    })
+    if (!saveDialog.cancelled) {
+      const saveBuffer = await workbook.xlsx.writeBuffer(saveDialog.filePath)
+      fs.writeFile(saveDialog.filePath, saveBuffer, err => {
+        if (err) console.error(err)
+      })
+    }
+  }
+
+  // const newworksheet = newWorkbook.getWorksheet('My Sheet')
+  // newworksheet.columns = [
+  //   { header: 'Id', key: 'id', width: 10 },
+  //   { header: 'Name', key: 'name', width: 32 },
+  //   { header: 'D.O.B.', key: 'dob', width: 15 },
+  // ]
+  // await newworksheet.addRow({
+  //   id: 3,
+  //   name: 'New Guy',
+  //   dob: new Date(2000, 1, 1),
+  // })
+
+  // await newWorkbook.xlsx.writeFile('export2.xlsx')
+  // }
 
   const onDropRejected = useCallback(data => {
     if (data[0].errors[0].code === 'file-invalid-type') {
@@ -194,50 +268,74 @@ const Upload = () => {
     [isDragActive, isDragReject, isDragAccept]
   )
 
-  if (!working) {
-    return (
-      <>
-        <div className={styles.dragWrapper} {...getRootProps({ style })}>
-          <input {...getInputProps()} />
-          {isDragActive ? (
-            <p>Drop the files here ...</p>
-          ) : (
-            <p>
-              <i
-                className='far fa-file-excel'
-                style={{ marginRight: '10px' }}
-              />
-              Drop your Excel File Here
-            </p>
-          )}
-        </div>
-        <ul className={styles.fileList}>{files}</ul>
-        <div>
-          {!myFiles.length && (
-            <>
-              <div className={styles.noteWrapper}>
-                Only `.xls` or `.xslx` files allowed
-              </div>
-            </>
-          )}
-        </div>
-      </>
-    )
-  } else {
-    return (
-      <div className='lds-grid'>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
+  return (
+    <>
+      <div className={styles.dragWrapper} {...getRootProps({ style })}>
+        <input {...getInputProps()} />
+        {isDragActive ? (
+          <p>Drop the files here ...</p>
+        ) : (
+          <p>
+            <i className='far fa-file-excel' style={{ marginRight: '10px' }} />
+            Drop your Excel File Here
+          </p>
+        )}
       </div>
-    )
-  }
+      <ul className={styles.fileList}>{files}</ul>
+      <div>
+        {!myFiles.length && (
+          <>
+            <div className={styles.noteWrapper}>
+              Only `.xls` or `.xslx` files allowed
+            </div>
+          </>
+        )}
+      </div>
+      <div>
+        {saveModal && (
+          <div className={styles.modalWrapper}>
+            <div className={styles.modalContent}>
+              <h2>Analysis Complete</h2>
+              <div>Would you like to download the resulting Excel file?</div>
+              <div className={styles.btnWrapper}>
+                <button
+                  className={styles.saveBtn}
+                  name='saveExcel'
+                  type='button'
+                  onClick={saveDiffExcel}
+                >
+                  Save
+                </button>
+                <button
+                  className={styles.cancelBtn}
+                  name='cancel'
+                  type='button'
+                  onClick={() => setSaveModal(false)}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+      {working && (
+        <div className={styles.loaderWrapper}>
+          <div className='lds-grid'>
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+            <div />
+          </div>
+        </div>
+      )}
+    </>
+  )
 }
 
 export default Upload

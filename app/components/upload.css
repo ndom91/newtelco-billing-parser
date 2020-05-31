@@ -4,9 +4,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 10px;
   border: 2px dashed #bebebe;
   padding: 20px;
+}
+.dragWrapper:hover {
+  cursor: pointer;
 }
 .fileItem {
   display: flex;
@@ -55,4 +57,78 @@
   background-color: var(--primary-color);
   color: #fff;
   cursor: pointer;
+}
+
+.modalWrapper {
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  z-index: 9;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+}
+.modalContent {
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  margin: 0 auto;
+}
+.btnWrapper {
+  display: flex;
+  justify-content: space-around;
+  width: calc(100% - 80px);
+  margin: 0 auto;
+}
+.saveBtn {
+  width: 30%;
+  padding: 10px 25px;
+  border-radius: 5px;
+  border: 2px solid var(--primary-color);
+  background-color: #fff;
+  color: var(--primary-color);
+  transition: background-color 150ms ease-in-out;
+}
+.saveBtn:active,
+.saveBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(103, 178, 70, 0.39);
+}
+.saveBtn:hover {
+  cursor: pointer;
+  background-color: var(--primary-color);
+  color: #fff;
+}
+.cancelBtn {
+  width: 30%;
+  padding: 10px 25px;
+  border-radius: 5px;
+  border: 2px solid #eaeaea;
+  background-color: #fff;
+  color: #bcbcbc;
+  transition: color 150ms ease-in-out;
+}
+.cancelBtn:active,
+.cancelBtn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(184, 184, 184, 0.39);
+}
+.cancelBtn:hover {
+  cursor: pointer;
+  color: var(--primary-color);
+}
+.loaderWrapper {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  z-index: 3;
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
 }

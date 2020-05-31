@@ -96,11 +96,11 @@ a:hover {
   background-color: #f37272;
   border-bottom-right-radius: 100%;
 }
-.menu_toggle:active i {
-  opacity: 0.8;
-}
 .menu_toggle i {
   color: #f0f0f0;
+}
+.menu_toggle:active i {
+  opacity: 0.8;
 }
 .menu_toggle .menu_open,
 .menu_toggle .menu_close {
@@ -188,11 +188,11 @@ a:hover {
   color: #bcbcbc;
 }
 .menu_items_right a .icon {
-  margin-right: 0px;
+  margin-right: 0;
   margin-left: 25px;
 }
-.menu_items_right a .icon:after,
-.menu_items a .icon:after {
+.menu_items_right a .icon::after,
+.menu_items a .icon::after {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -211,8 +211,8 @@ a:hover {
 .menu_items a:hover {
   color: var(--primary-color);
 }
-.menu_items_right a:hover .icon:after,
-.menu_items a:hover .icon:after {
+.menu_items_right a:hover .icon::after,
+.menu_items a:hover .icon::after {
   border-color: var(--primary-color);
 }
 .menu_items_right a:active .icon,
@@ -222,9 +222,9 @@ a:hover {
 
 /* Let's open up the menu */
 .shazam {
-  /*.content_inner {
+  /* .content_inner {
     height: 100%;
-  }*/
+  } */
 }
 .shazam .content {
   -webkit-transform: rotate(-30deg);
@@ -273,9 +273,11 @@ a:hover {
 .lds-grid {
   display: inline-block;
   position: relative;
+  margin: 0 auto;
   margin-top: 50px;
   width: 80px;
   height: 80px;
+  z-index: 4;
 }
 .lds-grid div {
   position: absolute;

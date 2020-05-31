@@ -5,15 +5,16 @@ module.exports = {
     'import/no-extraneous-dependencies': 'off',
     'no-console': 'off',
     'react/jsx-props-no-spreading': 'off',
-    'no-new': 'off'
+    'no-new': 'off',
+    'no-restricted-syntax': 'off',
   },
   settings: {
     'import/resolver': {
       // See https://github.com/benmosher/eslint-plugin-import/issues/1396#issuecomment-575727774 for line below
       node: {},
       webpack: {
-        config: require.resolve('./configs/webpack.config.eslint.js')
-      }
-    }
-  }
-};
+        config: require.resolve('./configs/webpack.config.eslint.js'),
+      },
+    },
+  },
+}
