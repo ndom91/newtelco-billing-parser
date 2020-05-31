@@ -30,7 +30,6 @@ let mainWindow: BrowserWindow | null = null
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
-  Menu.setApplicationMenu(null)
 }
 
 if (
@@ -92,8 +91,12 @@ const createWindow = async () => {
     mainWindow = null
   })
 
-  const menuBuilder = new MenuBuilder(mainWindow)
-  menuBuilder.buildMenu()
+  if (process.env.NODE_ENV === 'development') {
+    const menuBuilder = new MenuBuilder(mainWindow)
+    menuBuilder.buildMenu()
+  } else {
+    Menu.setApplicationMenu(null)
+  }
 
   // Remove this if your app does not use auto updates
   // eslint-disable-next-line

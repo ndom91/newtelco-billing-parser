@@ -1,4 +1,4 @@
-name: Test
+name: Release
 
 on: push
 
@@ -23,7 +23,7 @@ jobs:
         run: |
           yarn install
 
-      - name: yarn test
+      - name: yarn release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
