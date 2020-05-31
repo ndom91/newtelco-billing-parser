@@ -266,6 +266,7 @@
     "electron-debug": "^3.0.1",
     "electron-log": "^4.0.6",
     "electron-updater": "^4.2.0",
+    "exceljs": "^3.9.0",
     "history": "^4.10.1",
     "mssql": "^6.2.0",
     "react": "^16.12.0",
