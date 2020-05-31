@@ -1,21 +1,11 @@
-<h1>Newtelco Billing Verification</h1>
-<hr />
-
-<div align="center">
-
-[![Build Status][github-actions-status]](github-actions-status)
-[![Dependency Status][david-image]][david-url]
-[![DevDependency Status][david-dev-image]][david-dev-url]
-[![Github Tag][github-tag-image]][github-tag-url]
-
-</div>
+# Newtelco Billing Verification
 
 ## Install
 
 First, clone the repo via git and install dependencies:
 
 ```bash
-git clone https://git.newtelco.dev/ndomino/billing-parser.git
+git clone https://github.com/newtelco/billing-parser.git
 cd billing-parser
 yarn
 ```
