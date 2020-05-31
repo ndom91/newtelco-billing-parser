@@ -1,7 +1,7 @@
 {
   "name": "newtelco-billing-parser",
   "productName": "NewtelcoBilling",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -101,16 +101,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/electron-react-boilerplate/electron-react-boilerplate.git"
+    "url": "git+https://github.com/newtelco/billing-parser"
   },
   "author": {
     "name": "Nico Domino",
     "email": "ndomino@newtelco.de",
-    "url": "https://git.newtelco.dev/newtelco/billing-parser"
+    "url": "https://github.com/newtelco/billing-parser"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://git.newtelco.dev/newtelco/billing-parser/issues"
+    "url": "https://github.com/newtelco/billing-parser/issues"
   },
   "keywords": [
     "electron",
@@ -121,7 +121,7 @@
     "sass",
     "webpack"
   ],
-  "homepage": "https://git.newtelco.dev/newtelco/billing-parser#readme",
+  "homepage": "https://github.com/newtelco/billing-parser#readme",
   "jest": {
     "testURL": "http://localhost/",
     "moduleNameMapper": {
