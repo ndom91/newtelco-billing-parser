@@ -98,6 +98,9 @@ const Filezone = () => {
             where AktuelleVersion = 1 
             and Nummer in (${orderQuery.join(', ')})
           `)
+          if (orderIdQuery.error) {
+            setWorking(false)
+          }
           const orderIds = orderIdQuery.recordset.map(row => {
             return row.I3D
           })
@@ -167,7 +170,6 @@ const Filezone = () => {
             to: 'C1',
           }
         })
-      console.log(returnWorkbook)
       setWorkbook(returnWorkbook)
       setWorking(false)
       setSaveModal(true)

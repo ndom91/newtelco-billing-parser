@@ -9,11 +9,13 @@
  * `./app/main.prod.js` using webpack. This gives us some performance wins.
  */
 import path from 'path'
-import { app, BrowserWindow, ipcMain } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
 import openAboutWindow from 'about-window'
 import MenuBuilder from './menu'
+
+const appInfo = require('../package.json')
 
 export default class AppUpdater {
   constructor() {
@@ -28,6 +30,7 @@ let mainWindow: BrowserWindow | null = null
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support')
   sourceMapSupport.install()
+  Menu.setApplicationMenu(null)
 }
 
 if (
@@ -134,16 +137,16 @@ ipcMain.on('open-about', () => {
   openAboutWindow({
     icon_path: path.join(__dirname, '/../resources/icons/256x256.png'),
     package_json_dir: path.join(__dirname, '/../'),
-    product_name: 'Newtelco Billing Parser',
+    product_name: appInfo.name,
     bug_report_url: 'https://git.newtelco.dev/newtelco/billing-parser-1/issue',
     copyright: '2020 Newtelco GmbH',
     homepage: 'https://git.newtelco.dev',
-    description: 'Newtelco Billing Comparison Tool',
-    license: 'MIT',
+    description: appInfo.description,
+    license: appInfo.license,
     adjust_window_size: true,
     win_options: {
-      width: 380,
-      height: 380,
+      titleBarStyle: 'hidden',
+      resizable: false,
     },
     show_close_button: 'Close',
   })
