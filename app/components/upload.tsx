@@ -1,7 +1,7 @@
-import React, { useMemo, useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
-import styles from './upload.css';
-// const nativeImage = require('electron').nativeImage
+import React, { useMemo, useState, useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
+import styles from './upload.css'
+import db from '../utils/db'
 
 const baseStyle = {
   flex: 1,
@@ -18,38 +18,38 @@ const baseStyle = {
   backgroundColor: '#fafafa',
   color: '#bdbdbd',
   outline: 'none',
-  transition: 'border .24s ease-in-out'
-};
+  transition: 'border .24s ease-in-out',
+}
 
 const activeStyle = {
-  borderColor: '#2196f3'
-};
+  borderColor: '#2196f3',
+}
 
 const acceptStyle = {
-  borderColor: '#00e676'
-};
+  borderColor: '#00e676',
+}
 
 const rejectStyle = {
-  borderColor: '#ff1744'
-};
+  borderColor: '#ff1744',
+}
 
 type File = {
   file: {
-    lastModified: number;
-    lastModifiedDate: Date;
-    name: string;
-    path: string;
-    size: number;
-    type: string;
-    webkitRelativePath: string;
-  }[];
-};
+    lastModified: number
+    lastModifiedDate: Date
+    name: string
+    path: string
+    size: number
+    type: string
+    webkitRelativePath: string
+  }[]
+}
 
 const Upload = () => {
-  const [myFiles, setMyFiles] = useState<File>([]);
+  const [myFiles, setMyFiles] = useState<File>([])
   const onDrop = useCallback(acceptedFiles => {
-    console.log(acceptedFiles);
-    setMyFiles([...myFiles, ...acceptedFiles]);
+    console.log(acceptedFiles)
+    setMyFiles([...myFiles, ...acceptedFiles])
     // acceptedFiles.forEach(file => {
     //   const reader = new FileReader()
 
@@ -61,24 +61,25 @@ const Upload = () => {
     //   }
     //   reader.readAsArrayBuffer(file)
     // })
-  }, []);
+  }, [])
 
   const removeFile = file => () => {
-    const newFiles = [...myFiles];
-    newFiles.splice(newFiles.indexOf(file), 1);
-    setMyFiles(newFiles);
-  };
+    const newFiles = [...myFiles]
+    newFiles.splice(newFiles.indexOf(file), 1)
+    setMyFiles(newFiles)
+  }
 
   // const removeAll = () => {
   //   setMyFiles([]);
   // };
 
   const handleUpload = data => {
-    console.log(data);
-  };
+    db()
+    console.log(data)
+  }
 
   const onDropRejected = useCallback(data => {
-    console.log(data);
+    console.log(data)
     // const img = nativeImage.createFromPath(
     //   '../assets/img/icons/nt-512-grey.png'
     // )
@@ -86,46 +87,46 @@ const Upload = () => {
     if (data[0].errors[0].code === 'file-invalid-type') {
       new Notification('Newtelco', {
         body: 'Only Excel files allowed',
-        icon: '../assets/img/icons/nt-512-grey.png'
-      });
+        icon: '../assets/img/icons/nt-512-grey.png',
+      })
     }
-  });
+  })
 
   const {
     getRootProps,
     getInputProps,
     isDragActive,
     isDragAccept,
-    isDragReject
+    isDragReject,
   } = useDropzone({
     onDrop,
     onDropRejected,
     accept: [
       'application/vnd.ms-excel',
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    ]
-  });
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ],
+  })
 
   const files = myFiles.map(file => (
     <li key={file.path} className={styles.fileItem}>
       <span>{file.name}</span>
       <div className={styles.buttonWrapper}>
         <button
-          type="button"
+          type='button'
           className={styles.fileButton}
           onClick={() => handleUpload(file.path)}
         >
           Itenos
         </button>
         <button
-          type="button"
+          type='button'
           className={styles.fileButton}
           onClick={() => handleUpload(file.path)}
         >
           Equinix
         </button>
         <button
-          type="button"
+          type='button'
           className={styles.fileButton}
           onClick={removeFile(file)}
         >
@@ -133,17 +134,17 @@ const Upload = () => {
         </button>
       </div>
     </li>
-  ));
+  ))
 
   const style = useMemo(
     () => ({
       ...baseStyle,
       ...(isDragActive ? activeStyle : {}),
       ...(isDragAccept ? acceptStyle : {}),
-      ...(isDragReject ? rejectStyle : {})
+      ...(isDragReject ? rejectStyle : {}),
     }),
     [isDragActive, isDragReject, isDragAccept]
-  );
+  )
 
   return (
     <>
@@ -152,7 +153,10 @@ const Upload = () => {
         {isDragActive ? (
           <p>Drop the files here ...</p>
         ) : (
-          <p>Drop your Billing File Here</p>
+          <p>
+            <i className='far fa-file-excel' style={{ marginRight: '10px' }} />
+            Drop your Excel File Here
+          </p>
         )}
       </div>
       <ul className={styles.fileList}>{files}</ul>
@@ -164,7 +168,7 @@ const Upload = () => {
         </>
       )}
     </>
-  );
-};
+  )
+}
 
-export default Upload;
+export default Upload

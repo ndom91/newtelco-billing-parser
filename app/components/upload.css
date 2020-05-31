@@ -19,12 +19,12 @@
   border: 2px dashed var(--primary-color);
   text-align: center;
 }
-
 .buttonWrapper {
   display: flex;
   flex-direction: column;
   max-width: 80px;
   border-radius: 5px;
+  z-index: 2;
 }
 .fileList {
   list-style: none;

@@ -128,7 +128,7 @@ a:hover {
 
 .menu_items_right {
   position: fixed;
-  bottom: 30px;
+  bottom: 20px;
   right: 35px;
   list-style-type: none;
   margin: 0;
@@ -144,7 +144,7 @@ a:hover {
 }
 .menu_items li {
   height: 60px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   -webkit-transform: translateX(-300px);
   transform: translateX(-300px);
   -webkit-transition: -webkit-transform 0.7s 0s cubic-bezier(1, 0.005, 0.24, 1);
@@ -163,11 +163,11 @@ a:hover {
   transition: transform 0.7s 0s cubic-bezier(1, 0.005, 0.24, 1),
     -webkit-transform 0.7s 0s cubic-bezier(1, 0.005, 0.24, 1);
 }
+.menu_items li:nth-child(1) {
+  margin-left: 10px;
+}
 .menu_items li:nth-child(2) {
   margin-left: 30px;
-}
-.menu_items li:nth-child(3) {
-  margin-left: 60px;
 }
 .menu_items_right a,
 .menu_items a {

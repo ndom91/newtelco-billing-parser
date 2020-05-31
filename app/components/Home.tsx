@@ -1,27 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { ipcRenderer } from 'electron';
-import styles from './Home.css';
-import Upload from './upload';
+import React, { useState, useEffect } from 'react'
+import { ipcRenderer } from 'electron'
+import styles from './Home.css'
+import Upload from './upload'
 
 const Home = () => {
-  const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(false)
 
   useEffect(() => {
-    const body = document.querySelector('body');
+    const body = document.querySelector('body')
     if (sidebarVisible) {
-      body.classList.add('shazam');
+      body.classList.add('shazam')
     } else {
-      body.classList.remove('shazam');
+      body.classList.remove('shazam')
     }
-  }, [sidebarVisible]);
+  }, [sidebarVisible])
 
   const quitApplication = () => {
-    ipcRenderer.send('app-quit');
-  };
+    ipcRenderer.send('app-quit')
+  }
 
   const openAbout = () => {
-    ipcRenderer.send('open-about');
-  };
+    ipcRenderer.send('open-about')
+  }
 
   return (
     <>
@@ -35,48 +35,48 @@ const Home = () => {
             onClick={() => setSidebarVisible(!sidebarVisible)}
           >
             <svg
-              width="36"
-              height="36"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="#bcbcbc"
+              width='36'
+              height='36'
+              fill='none'
+              strokeLinecap='round'
+              strokeLinejoin='round'
+              strokeWidth='2'
+              viewBox='0 0 24 24'
+              stroke='#bcbcbc'
             >
-              <path d="M4 6h16M4 12h8m-8 6h16" />
+              <path d='M4 6h16M4 12h8m-8 6h16' />
             </svg>
           </span>
           <span className={styles.headerText}>
-            <h2 className={styles.header}>Newtelco Billing Parser</h2>
+            <h2 className={styles.header}>Billing Verification</h2>
           </span>
         </div>
         <Upload />
       </div>
-      <ul className="menu_items">
+      <ul className='menu_items'>
         <li>
-          <a href="#">
-            <i className="icon fa fa-book fa-lg" />
+          <a>
+            <i className='icon fa fa-book fa-lg' />
             History
           </a>
         </li>
         <li>
-          <a href="#" onClick={quitApplication}>
-            <i className="icon fa fa-sign-out-alt fa-lg" />
+          <a onClick={quitApplication}>
+            <i className='icon fa fa-sign-out-alt fa-lg' />
             Quit
           </a>
         </li>
       </ul>
-      <ul className="menu_items_right">
+      <ul className='menu_items_right'>
         <li>
-          <a href="#" onClick={openAbout}>
+          <a onClick={openAbout}>
             About
-            <i className="icon fa fa-question fa-lg" />
+            <i className='icon fa fa-question fa-lg' />
           </a>
         </li>
       </ul>
     </>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home

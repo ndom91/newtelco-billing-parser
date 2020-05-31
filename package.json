@@ -84,8 +84,6 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "rpm",
         "AppImage"
       ],
       "category": "Development"
@@ -173,6 +171,7 @@
     "@types/enzyme-adapter-react-16": "^1.0.6",
     "@types/history": "^4.7.5",
     "@types/jest": "^24.9.1",
+    "@types/mssql": "^6.0.1",
     "@types/node": "^12",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.7",
@@ -263,10 +262,12 @@
     "connected-react-router": "^6.8.0",
     "core-js": "^3.6.5",
     "devtron": "^1.4.0",
+    "dotenv": "^8.2.0",
     "electron-debug": "^3.0.1",
     "electron-log": "^4.0.6",
     "electron-updater": "^4.2.0",
     "history": "^4.10.1",
+    "mssql": "^6.2.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-dropzone": "^11.0.1",
@@ -277,6 +278,9 @@
     "redux": "^4.0.5",
     "redux-thunk": "^2.3.0",
     "source-map-support": "^0.5.16"
+  },
+  "resolutions": {
+    "iconv-lite": "ashtuchkin/iconv-lite"
   },
   "devEngines": {
     "node": ">=7.x",
