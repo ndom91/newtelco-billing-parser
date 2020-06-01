@@ -1,7 +1,7 @@
 {
   "name": "newtelco-billing-parser",
   "productName": "Billing Verification",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -50,19 +50,19 @@
       "prettier --ignore-path .eslintignore --single-quote --write"
     ]
   },
-  "main": "./main.prod.js",
+  "main": "./app/main.prod.js",
   "build": {
     "productName": "Newtelco Billing Verification",
     "appId": "org.newtelco.billingparser",
+    "asar": false,
     "files": [
-      "dist/",
-      "node_modules/",
-      "app.html",
-      "main.prod.js",
-      "main.prod.js.map",
-      "../resources/**/*",
-      "package.json",
-      "../package.json"
+      "app/dist/**/*",
+      "node_modules/**/*",
+      "app/app.html",
+      "app/main.prod.js",
+      "app/main.prod.js.map",
+      "resources/**/*",
+      "package.json"
     ],
     "win": {
       "target": [
