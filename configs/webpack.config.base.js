@@ -42,8 +42,7 @@ export default {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
-      ...dotenv.config({ path: path.join(__dirname, '/../configs/.env') })
-        .parsed,
+      ...dotenv.config({ path: path.join(__dirname, '/configs/.env') }).parsed,
     }),
     new webpack.NamedModulesPlugin(),
   ],

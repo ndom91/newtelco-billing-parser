@@ -54,9 +54,8 @@
   "build": {
     "productName": "Newtelco Billing Verification",
     "appId": "org.newtelco.billingparser",
-    "asar": false,
     "files": [
-      "app/dist/**/*",
+      "dist/**/*",
       "node_modules/**/*",
       "app/app.html",
       "app/main.prod.js",

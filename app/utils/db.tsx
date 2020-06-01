@@ -11,6 +11,12 @@ const config = {
   database: process.env.MSSQL_DB,
 }
 
+log.info('process.env', process.env.MSSQL_SERVER)
+log.info('config', config)
+log.info('dirname', __dirname)
+log.info('cwd', process.cwd())
+// log.info('readdir', fs.readdirSync(__dirname))
+
 mssql.connect(config)
 
 const q = async (query: string) => {
@@ -23,9 +29,10 @@ const q = async (query: string) => {
     log.error(error)
     new Notification('Error', {
       body: 'Error connecting to Database',
-      icon: path.join(__dirname, '../resources/icons/64x64.png'),
+      icon: path.join(process.cwd(), '../resources/icons/64x64.png'),
     })
     return { error }
   }
 }
+
 export default q
