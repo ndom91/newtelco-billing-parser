@@ -1,7 +1,7 @@
 {
   "name": "newtelco-billing-parser",
   "productName": "Billing Verification",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -188,7 +188,6 @@
     "electron": "7.1.13",
     "electron-builder": "^22.3.6",
     "electron-devtools-installer": "^2.2.4",
-    "electron-rebuild": "^1.10.0",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.2",
     "enzyme-to-json": "^3.4.4",
