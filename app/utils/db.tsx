@@ -12,7 +12,6 @@ const config = {
 }
 
 mssql.connect(config)
-log.info(mssql)
 
 const q = async (query: string) => {
   log.info(query)
