@@ -1,7 +1,7 @@
 {
   "name": "newtelco-billing-parser",
   "productName": "Billing Verification",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -60,8 +60,8 @@
       "app.html",
       "main.prod.js",
       "main.prod.js.map",
-      "resources/**/*",
-      "package.json"
+      "../resources/**/*",
+      "../package.json"
     ],
     "win": {
       "target": [
