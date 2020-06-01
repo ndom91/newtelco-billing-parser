@@ -50,6 +50,7 @@
       "prettier --ignore-path .eslintignore --single-quote --write"
     ]
   },
+  "main": "./main.prod.js",
   "build": {
     "productName": "Newtelco Billing Verification",
     "appId": "org.newtelco.billingparser",
