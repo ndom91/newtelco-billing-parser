@@ -1,5 +1,6 @@
 const mssql = require('mssql')
 const path = require('path')
+const log = require('electron-log')
 
 const config = {
   user: process.env.MSSQL_USERNAME,
@@ -15,6 +16,7 @@ const q = async (query: string) => {
     const results = await mssql.query(query)
     return results
   } catch (error) {
+    log.error(error)
     new Notification('Error', {
       body: 'Error connecting to Database',
       icon: path.join(__dirname, '../resources/icons/64x64.png'),
