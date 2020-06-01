@@ -42,7 +42,7 @@ export default {
   plugins: [
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
-      ...dotenv.config({ path: '/opt/newtelco/billing-parser-1/configs/.env' })
+      ...dotenv.config({ path: path.join(__dirname, '/../configs/.env') })
         .parsed,
     }),
     new webpack.NamedModulesPlugin(),
