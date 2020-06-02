@@ -1,7 +1,7 @@
 {
   "name": "newtelco-billing-parser",
   "productName": "Billing Verification",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Newtelco internal application for verifying supplier billing statements against our CRM",
   "scripts": {
     "build": "concurrently \"yarn build-main\" \"yarn build-renderer\"",
@@ -55,7 +55,7 @@
     "productName": "Newtelco Billing Verification",
     "appId": "org.newtelco.billingparser",
     "files": [
-      "dist/**/*",
+      "app/dist/**/*",
       "node_modules/**/*",
       "app/app.html",
       "app/main.prod.js",
