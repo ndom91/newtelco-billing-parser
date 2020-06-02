@@ -67,6 +67,7 @@ const createWindow = async () => {
             nodeIntegration: true,
           }
         : {
+            nodeIntegration: true,
             preload: path.join(__dirname, 'dist/renderer.prod.js'),
           },
   })
@@ -138,8 +139,8 @@ ipcMain.on('app-quit', () => {
 
 ipcMain.on('open-about', () => {
   openAboutWindow({
-    icon_path: path.join(__dirname, '../resources/icons/256x256.png'),
-    package_json_dir: path.join(__dirname, '../'),
+    icon_path: path.join(process.cwd(), 'resources/icons/256x256.png'),
+    package_json_dir: process.cwd(),
     product_name: appInfo.name,
     bug_report_url: 'https://git.newtelco.dev/newtelco/billing-parser-1/issue',
     copyright: '2020 Newtelco GmbH',
