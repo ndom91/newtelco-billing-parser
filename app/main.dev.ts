@@ -137,10 +137,13 @@ ipcMain.on('app-quit', () => {
   }
 })
 
+log.info('main1', process.cwd())
+log.info('main2', __dirname)
+
 ipcMain.on('open-about', () => {
   openAboutWindow({
     icon_path: path.join(process.cwd(), 'resources/icons/256x256.png'),
-    package_json_dir: process.cwd(),
+    package_json_dir: path.join(__dirname, '/../'),
     product_name: appInfo.name,
     bug_report_url: 'https://git.newtelco.dev/newtelco/billing-parser-1/issue',
     copyright: '2020 Newtelco GmbH',
@@ -149,7 +152,6 @@ ipcMain.on('open-about', () => {
     license: appInfo.license,
     adjust_window_size: true,
     win_options: {
-      titleBarStyle: 'hidden',
       resizable: false,
     },
     show_close_button: 'Close',
