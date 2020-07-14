@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import path from 'path'
 import styles from './Sheets.css'
+import { getColumnRange, getMultipleColumns } from '../utils/matrix'
 
 // const { dialog } = require('electron').remote
 // const ExcelJS = require('exceljs')
@@ -38,7 +39,7 @@ const Sheets = () => {
       sheets.spreadsheets.values.get(
         {
           spreadsheetId: process.env.SHEET_ID,
-          range: `${newValue}!A2:I`,
+          range: `${newValue}!A2:Y`,
         },
         (err, res) => {
           if (err) {
@@ -56,8 +57,13 @@ const Sheets = () => {
     try {
       const master = await getMasterData()
       const newData = await getNewData()
-      console.log(masterValue, master.length)
-      console.log(newValue, newData.length)
+      const masterLength = master.length
+      const newDataLength = newData.length
+      console.log(masterLength, newDataLength)
+      const kundenReferenzNewSheet = getMultipleColumns(newData, ['Y', 'V'])
+      console.log(kundenReferenzNewSheet)
+      const poNrMasterData = getColumnRange(master, 'B:C')
+      console.log(poNrMasterData)
       setWorking(false)
     } catch (err) {
       if (err) console.error(err)
