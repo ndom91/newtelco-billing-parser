@@ -67,7 +67,7 @@
   cursor: pointer;
   color: #8a8a8a;
   background-color: #eee;
-  width: 100px;
+  width: 120px;
   height: 50px;
   border-radius: 10px;
   box-shadow: -7px -7px 20px 0 #fff9, -4px -4px 5px 0 #fff9,
@@ -79,16 +79,25 @@
 .clearBtn svg {
   opacity: 0.4;
 }
-.confirmBtn:active,
-.clearBtn:active,
 .confirmBtn:hover,
 .clearBtn:hover {
+  cursor: pointer;
+  box-shadow: -5px -5px 10px 0 #fff9, -4px -4px 5px 0 #fff9,
+    31px 21px 30px 0 #0002, 4px 4px 5px 0 #0001, inset 0 0 0 0 #fff9,
+    inset 0 0 0 0 #0001, inset 0 0 0 0 #fff9, inset 0 0 0 0 #0001;
+}
+.confirmBtn:active,
+.clearBtn:active {
   cursor: pointer;
   outline: none;
   box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.1);
   box-shadow: 0 0 0 0 #fff9, 0 0 0 0 #fff9, 0 0 0 0 #0001, 0 0 0 0 #0001,
     inset -7px -7px 20px 0 #fff9, inset -4px -4px 5px 0 #fff9,
     inset 7px 7px 20px 0 #0003, inset 4px 4px 5px 0 #0001;
+}
+.confirmBtn:focus,
+.clearBtn:focus {
+  outline: 0;
 }
 .confirmBtn span,
 .clearBtn span {

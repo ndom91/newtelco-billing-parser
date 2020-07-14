@@ -17,38 +17,52 @@ const Sheets = () => {
   const [masterValue, setMasterValue] = useState('MD - master data')
   const [newValue, setNewValue] = useState('')
   const getMasterData = async () => {
-    await sheets.spreadsheets.values.get(
-      {
-        spreadsheetId: process.env.SHEET_ID,
-        range: `${masterValue}!A2:I`,
-      },
-      (err, res) => {
-        if (err) console.error(err)
-        console.log(res)
-        return res.data.values
-      }
+    return new Promise((resolve, reject) =>
+      sheets.spreadsheets.values.get(
+        {
+          spreadsheetId: process.env.SHEET_ID,
+          range: `${masterValue}!A2:I`,
+        },
+        (err, res) => {
+          if (err) {
+            console.error(err)
+            reject(err)
+          }
+          resolve(res.data.values)
+        }
+      )
     )
   }
   const getNewData = async () => {
-    await sheets.spreadsheets.values.get(
-      {
-        spreadsheetId: process.env.SHEET_ID,
-        range: `${newValue}!A2:I`,
-      },
-      (err, res) => {
-        if (err) console.error(err)
-        console.log(res)
-        return res.data.values
-      }
+    return new Promise((resolve, reject) =>
+      sheets.spreadsheets.values.get(
+        {
+          spreadsheetId: process.env.SHEET_ID,
+          range: `${newValue}!A2:I`,
+        },
+        (err, res) => {
+          if (err) {
+            console.error(err)
+            reject(err)
+          }
+          resolve(res.data.values)
+        }
+      )
     )
   }
 
   const compareValues = async () => {
     setWorking(true)
-    const master = getMasterData()
-    const newData = getNewData()
-    console.log(master, newData)
-    setWorking(false)
+    try {
+      const master = await getMasterData()
+      const newData = await getNewData()
+      console.log(masterValue, master.length)
+      console.log(newValue, newData.length)
+      setWorking(false)
+    } catch (err) {
+      if (err) console.error(err)
+      setWorking(false)
+    }
   }
   const clearValues = () => {
     setNewValue('')
