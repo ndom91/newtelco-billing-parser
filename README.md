@@ -1,6 +1,7 @@
 # Newtelco Billing Verification
 
 [Itenos Masterdata Sheet](https://docs.google.com/spreadsheets/d/1zA4HA3DCceRFqEIwkTTITGjxxEr8QaIDhRrEwFeKR2s/edit#gid=688542946)
+[Sheets API Node Docs](https://googleapis.dev/nodejs/googleapis/latest/sheets/classes/Sheets.html)
 
 ## Install
 

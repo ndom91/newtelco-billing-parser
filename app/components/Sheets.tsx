@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import path from 'path'
 import styles from './Sheets.css'
-import { getColumnRange, getMultipleColumns } from '../utils/matrix'
+import {
+  getColumnRange,
+  getMultipleColumns,
+  compareArrays,
+} from '../utils/matrix'
 
 // const { dialog } = require('electron').remote
 // const ExcelJS = require('exceljs')
@@ -52,6 +56,20 @@ const Sheets = () => {
     )
   }
 
+  const updateOneCell = (value, cell) => {
+    const spreadsheetId = process.env.SHEET_ID
+    const request = {
+      majorDimension: 'ROWS',
+      values: [[value]],
+    }
+    sheets.spreadsheets.values.update(
+      request,
+      spreadsheetId,
+      `${masterValue}!${cell}`,
+      { valueInputOption: 'USER_ENTERED' }
+    )
+  }
+
   const compareValues = async () => {
     setWorking(true)
     try {
@@ -59,11 +77,27 @@ const Sheets = () => {
       const newData = await getNewData()
       const masterLength = master.length
       const newDataLength = newData.length
+
       console.log(masterLength, newDataLength)
+      // Step 1.1 - Get Kunden Referenz + PO Nr. from New Month Sheet
       const kundenReferenzNewSheet = getMultipleColumns(newData, ['Y', 'V'])
-      console.log(kundenReferenzNewSheet)
+      // console.log(kundenReferenzNewSheet)
+
+      // Step 1.2 - Get Kunden Ref + Po Nr. from Master Data
       const poNrMasterData = getColumnRange(master, 'B:C')
-      console.log(poNrMasterData)
+      // console.log(poNrMasterData)
+
+      // Step 1.3 - Compare two last two
+      const leftOverValues = compareArrays(
+        poNrMasterData,
+        kundenReferenzNewSheet
+      )
+      console.log(leftOverValues)
+
+      // Test
+      updateOneCell('Yes', 'AA8')
+
+      // Step X - Return
       setWorking(false)
     } catch (err) {
       if (err) console.error(err)

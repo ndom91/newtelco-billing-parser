@@ -14,6 +14,9 @@ export const getMultipleColumns = (array, columns) => {
       if (y === 0) returnArr.push([])
       const val = e[columnNum]
       returnArr[i][y] = val
+      if (y + 1 === columns.length) {
+        returnArr[i][y + 1] = `${column}${i + 2}`
+      }
       return true
     })
   })
@@ -26,7 +29,7 @@ export const getColumnRange = (array, range) => {
   console.log(start, end)
   const returnArr = array.reduce((total, e) => {
     const rowValues = e.slice(start, end + 1)
-    if (typeof rowValues === 'object') {
+    if (Array.isArray(rowValues)) {
       total.push(rowValues)
     }
     return total
@@ -35,11 +38,12 @@ export const getColumnRange = (array, range) => {
   return returnArr
 }
 
-// export const compareArrays = (A, B) => {
-//   A.reduce((missing, e) => {
-//     if (B.indexOf(A[i]) > -1) {
-//       missing.push(A[i])
-//     }
-//     return missing
-//   })
-// }
+export const compareArrays = (inputA, inputB) => {
+  const returnArr = []
+  inputA.forEach((row, i) => {
+    if (inputB.findIndex(el => el.join('') === row.splice(2, 1).join('')) < 0) {
+      returnArr.push(inputA[i])
+    }
+  })
+  return returnArr
+}
