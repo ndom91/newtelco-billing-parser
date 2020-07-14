@@ -51,3 +51,6 @@ npm-debug.log.*
 
 # Env Files
 .env
+
+# Service Account
+serviceacct.json

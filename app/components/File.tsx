@@ -8,6 +8,26 @@ import styles from './File.css'
 
 const { dialog } = require('electron').remote
 const ExcelJS = require('exceljs')
+const { google } = require('googleapis')
+const { GoogleAuth } = require('google-auth-library')
+
+const auth = new GoogleAuth({
+  scopes: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+})
+const sheets = google.sheets({ version: 'v4', auth })
+const sheetName = 'MD - master data'
+console.log(process.env)
+console.log(process.env.SHEET_ID)
+sheets.spreadsheets.values.get(
+  {
+    spreadsheetId: process.env.SHEET_ID,
+    range: `${sheetName}!A2:I`,
+  },
+  (err, res) => {
+    if (err) console.error(err)
+    console.log(res)
+  }
+)
 
 const baseStyle = {
   flex: 1,
