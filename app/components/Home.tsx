@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ipcRenderer } from 'electron'
 import styles from './Home.css'
 import Filezone from './File'
+import Sheets from './Sheets'
 
 const Home = () => {
   const [sidebarVisible, setSidebarVisible] = useState(false)
@@ -115,7 +116,7 @@ const Home = () => {
         {mode === 'centron' ? (
           <Filezone />
         ) : mode === 'sheets' ? (
-          <input name='sheet' />
+          <Sheets />
         ) : null}
       </div>
       <ul className='menu_items'>
