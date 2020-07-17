@@ -13,7 +13,7 @@ const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
 
 const auth = new GoogleAuth({
-  scopes: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 })
 const sheets = google.sheets({ version: 'v4', auth })
 
@@ -56,18 +56,17 @@ const Sheets = () => {
     )
   }
 
-  const updateOneCell = (value, cell) => {
+  const updateOneCell = async (value, cell) => {
     const spreadsheetId = process.env.SHEET_ID
-    const request = {
-      majorDimension: 'ROWS',
-      values: [[value]],
-    }
-    sheets.spreadsheets.values.update(
-      request,
+    await sheets.spreadsheets.values.update({
       spreadsheetId,
-      `${masterValue}!${cell}`,
-      { valueInputOption: 'USER_ENTERED' }
-    )
+      range: `${newValue}!${cell}`,
+      resource: {
+        values: [[value]],
+      },
+      valueInputOption: 'USER_ENTERED',
+      auth,
+    })
   }
 
   const compareValues = async () => {
@@ -85,17 +84,25 @@ const Sheets = () => {
 
       // Step 1.2 - Get Kunden Ref + Po Nr. from Master Data
       const poNrMasterData = getColumnRange(master, 'B:C')
-      // console.log(poNrMasterData)
 
       // Step 1.3 - Compare two last two
       const leftOverValues = compareArrays(
         poNrMasterData,
         kundenReferenzNewSheet
       )
-      console.log(leftOverValues)
 
-      // Test
-      updateOneCell('Yes', 'AA8')
+      console.log(leftOverValues)
+      // Step 1.4 - Update input sheet
+      leftOverValues.serienMismatch.forEach((row, i) => {
+        setTimeout(() => {
+          updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`)
+        }, i * 1000)
+      })
+      leftOverValues.missing.forEach((row, i) => {
+        setTimeout(() => {
+          updateOneCell(`Missing in Master Data`, `AA${row.row.match(/\d+/g)}`)
+        }, i * 1000)
+      })
 
       // Step X - Return
       setWorking(false)

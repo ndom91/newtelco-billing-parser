@@ -26,7 +26,6 @@ export const getMultipleColumns = (array, columns) => {
 export const getColumnRange = (array, range) => {
   const start = range[0].toUpperCase().charCodeAt(0) - 65
   const end = range[2].toUpperCase().charCodeAt(0) - 65
-  console.log(start, end)
   const returnArr = array.reduce((total, e) => {
     const rowValues = e.slice(start, end + 1)
     if (Array.isArray(rowValues)) {
@@ -39,10 +38,28 @@ export const getColumnRange = (array, range) => {
 }
 
 export const compareArrays = (inputA, inputB) => {
-  const returnArr = []
-  inputA.forEach((row, i) => {
-    if (inputB.findIndex(el => el.join('') === row.splice(2, 1).join('')) < 0) {
-      returnArr.push(inputA[i])
+  const returnArr = { missing: [], serienMismatch: [] }
+  inputB.forEach((row, i) => {
+    const rowNr = row.pop()
+    if (i === 4) {
+      console.log(row[0])
+      console.log(inputA[4])
+    }
+    const returnVal = inputA.find(el => el[0] === row[0])
+    if (returnVal) {
+      if (returnVal[1] !== row[1]) {
+        returnArr.serienMismatch.push({
+          kNr: row[0],
+          sNr: returnVal[1],
+          row: rowNr,
+        })
+      }
+    } else {
+      returnArr.missing.push({
+        kNr: row[0],
+        sNr: row[1],
+        row: rowNr,
+      })
     }
   })
   return returnArr
