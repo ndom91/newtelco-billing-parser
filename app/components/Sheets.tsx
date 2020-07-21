@@ -96,12 +96,12 @@ const Sheets = () => {
       leftOverValues.serienMismatch.forEach((row, i) => {
         setTimeout(() => {
           updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`)
-        }, i * 1000)
+        }, i * 1500)
       })
       leftOverValues.missing.forEach((row, i) => {
         setTimeout(() => {
           updateOneCell(`Missing in Master Data`, `AA${row.row.match(/\d+/g)}`)
-        }, i * 1000)
+        }, i * 1500)
       })
 
       // Step X - Return

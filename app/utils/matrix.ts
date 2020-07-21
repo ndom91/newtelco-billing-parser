@@ -41,11 +41,16 @@ export const compareArrays = (inputA, inputB) => {
   const returnArr = { missing: [], serienMismatch: [] }
   inputB.forEach((row, i) => {
     const rowNr = row.pop()
-    if (i === 4) {
-      console.log(row[0])
-      console.log(inputA[4])
-    }
-    const returnVal = inputA.find(el => el[0] === row[0])
+    // if (i === 12) {
+    //   console.log(row[0])
+    //   console.log(inputA[4][0])
+    // }
+    const returnVal = inputA.find(el => {
+      if (i === 12) {
+        console.log(el[0], row[0])
+      }
+      return el[0] === row[0]
+    })
     if (returnVal) {
       if (returnVal[1] !== row[1]) {
         returnArr.serienMismatch.push({
