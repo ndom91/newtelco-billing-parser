@@ -23,9 +23,10 @@ sheets.spreadsheets.values.get(
     spreadsheetId: process.env.SHEET_ID,
     range: `${sheetName}!A2:I`,
   },
+  // eslint-disable-next-line
   (err, res) => {
     if (err) console.error(err)
-    console.log(res)
+    // console.log(res)
   }
 )
 

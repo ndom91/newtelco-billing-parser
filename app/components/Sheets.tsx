@@ -7,8 +7,8 @@ import {
   compareArrays,
 } from '../utils/matrix'
 
-// const { dialog } = require('electron').remote
-// const ExcelJS = require('exceljs')
+const DEBUG = false
+
 const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
 
@@ -74,24 +74,26 @@ const Sheets = () => {
     try {
       const master = await getMasterData()
       const newData = await getNewData()
-      const masterLength = master.length
-      const newDataLength = newData.length
 
-      console.log(masterLength, newDataLength)
       // Step 1.1 - Get Kunden Referenz + PO Nr. from New Month Sheet
       const kundenReferenzNewSheet = getMultipleColumns(newData, ['Y', 'V'])
-      // console.log(kundenReferenzNewSheet)
 
       // Step 1.2 - Get Kunden Ref + Po Nr. from Master Data
       const poNrMasterData = getColumnRange(master, 'B:C')
 
       // Step 1.3 - Compare two last two
+      console.log(kundenReferenzNewSheet.length, poNrMasterData.length)
       const leftOverValues = compareArrays(
         poNrMasterData,
         kundenReferenzNewSheet
       )
 
-      console.log(leftOverValues)
+      // debug
+      if (DEBUG) {
+        setWorking(false)
+        return true
+      }
+
       // Step 1.4 - Update input sheet
       leftOverValues.serienMismatch.forEach((row, i) => {
         setTimeout(() => {
@@ -110,6 +112,7 @@ const Sheets = () => {
       if (err) console.error(err)
       setWorking(false)
     }
+    return true
   }
   const clearValues = () => {
     setNewValue('')

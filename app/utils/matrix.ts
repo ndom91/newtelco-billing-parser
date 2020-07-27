@@ -33,22 +33,15 @@ export const getColumnRange = (array, range) => {
     }
     return total
   })
-  returnArr.splice(0, 25)
+  returnArr.splice(0, 4)
   return returnArr
 }
 
 export const compareArrays = (inputA, inputB) => {
   const returnArr = { missing: [], serienMismatch: [] }
-  inputB.forEach((row, i) => {
+  inputB.forEach(row => {
     const rowNr = row.pop()
-    // if (i === 12) {
-    //   console.log(row[0])
-    //   console.log(inputA[4][0])
-    // }
     const returnVal = inputA.find(el => {
-      if (i === 12) {
-        console.log(el[0], row[0])
-      }
       return el[0] === row[0]
     })
     if (returnVal) {
