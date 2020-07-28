@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import path from 'path'
+import dayjs from 'dayjs'
 import styles from './Sheets.css'
 import {
   getColumnRange,
@@ -7,7 +8,7 @@ import {
   compareArrays,
 } from '../utils/matrix'
 
-const DEBUG = false
+const DEBUG = true
 
 const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
@@ -69,6 +70,30 @@ const Sheets = () => {
     })
   }
 
+  const updateCellRange = async (value, cell) => {
+    const spreadsheetId = process.env.SHEET_ID
+    await sheets.spreadsheets.values.update({
+      spreadsheetId,
+      range: `${newValue}!${cell}`,
+      resource: {
+        values: value,
+      },
+      valueInputOption: 'USER_ENTERED',
+      auth,
+    })
+  }
+
+  const removeNonArrays = arr => {
+    if (!Array.isArray(arr)) return false
+    const newArr = arr
+    newArr.forEach(internalArr => {
+      if (!Array.isArray(internalArr)) {
+        newArr.shift(1)
+      }
+    })
+    return newArr
+  }
+
   const compareValues = async () => {
     setWorking(true)
     try {
@@ -82,29 +107,39 @@ const Sheets = () => {
       const poNrMasterData = getColumnRange(master, 'B:C')
 
       // Step 1.3 - Compare two last two
-      console.log(kundenReferenzNewSheet.length, poNrMasterData.length)
       const leftOverValues = compareArrays(
         poNrMasterData,
         kundenReferenzNewSheet
       )
 
-      // debug
-      if (DEBUG) {
-        setWorking(false)
-        return true
+      // Step 1.4 - Update input sheet
+      if (!DEBUG) {
+        leftOverValues.serienMismatch.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+        leftOverValues.missing.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(
+              `Missing in Master Data`,
+              `AA${row.row.match(/\d+/g)}`
+            )
+          }, i * 1500)
+        })
       }
 
-      // Step 1.4 - Update input sheet
-      leftOverValues.serienMismatch.forEach((row, i) => {
-        setTimeout(() => {
-          updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`)
-        }, i * 1500)
-      })
-      leftOverValues.missing.forEach((row, i) => {
-        setTimeout(() => {
-          updateOneCell(`Missing in Master Data`, `AA${row.row.match(/\d+/g)}`)
-        }, i * 1500)
-      })
+      // Step 2.0 - get Date from input sheet
+      const rawData = getColumnRange(newData, 'N:O')
+      let dateData
+      while (rawData.some(el => !Array.isArray(el))) {
+        dateData = removeNonArrays(rawData)
+      }
+      const monthValue = dayjs(dateData[0][0]).format('MMM/YY')
+      console.log(monthValue, dateData.length)
+      const val = Array(dateData.length).fill([monthValue])
+      console.log(val)
+      updateCellRange(val, `AB2:AB${dateData.length + 1}`)
 
       // Step X - Return
       setWorking(false)

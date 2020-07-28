@@ -16,8 +16,6 @@ const auth = new GoogleAuth({
 })
 const sheets = google.sheets({ version: 'v4', auth })
 const sheetName = 'MD - master data'
-console.log(process.env)
-console.log(process.env.SHEET_ID)
 sheets.spreadsheets.values.get(
   {
     spreadsheetId: process.env.SHEET_ID,
@@ -119,10 +117,6 @@ const Filezone = () => {
             where AktuelleVersion = 1 
             and Nummer in (${orderQuery.join(', ')})
           `)
-          console.log(orderIdQuery)
-          // if (orderIdQuery.error) {
-          //   setWorking(false)
-          // }
           const orderIds = orderIdQuery.recordset.map(row => {
             return row.I3D
           })
