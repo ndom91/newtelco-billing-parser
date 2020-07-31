@@ -15,6 +15,9 @@ const DEBUG = false
 const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
 
+const sleep = milliseconds => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+}
 const auth = new GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 })
@@ -189,7 +192,7 @@ const Sheets = () => {
         })
       }
 
-      // Step X - Return
+      // Step 7 - Return
       setWorking(false)
     } catch (err) {
       if (err) console.error(err)
