@@ -7,9 +7,10 @@ import {
   getMultipleColumns,
   compareArrays,
   comparePrices,
+  getMasterPrices,
 } from '../utils/matrix'
 
-const DEBUG = true
+const DEBUG = false
 
 const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
@@ -148,15 +149,42 @@ const Sheets = () => {
       const masterDataNetto = getMultipleColumns(master, ['BD', 'C']) // TODO: dynamically find column 'May/20'
 
       // Step 4 - Copy prices from Masterdata to input field
+      const masterPrices = getMasterPrices(inputDataNetto, masterDataNetto)
 
-      // Step 5 - Write Mismatched Prices to Inputdata AD
+      if (!DEBUG) {
+        masterPrices.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(row.priceB, `AC${row.row.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+      }
+
+      // Step 5 - Write if Mismatched Prices to Inputdata AD
       const mismatchedPrices = comparePrices(inputDataNetto, masterDataNetto)
-      console.log(mismatchedPrices)
 
-      if (DEBUG) {
+      if (!DEBUG) {
         mismatchedPrices.forEach((row, i) => {
           setTimeout(() => {
-            updateOneCell(row.priceB, `AC${row.rowA.match(/\d+/g)}`)
+            updateOneCell('Incorrect', `AD${row.rowA.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+      }
+
+      // Step 6 - Create column for manual checking
+      if (!DEBUG) {
+        leftOverValues.serienMismatch.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(`CHECK`, `AE${row.row.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+        leftOverValues.missing.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(`CHECK`, `AE${row.row.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+        mismatchedPrices.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell('CHECK', `AE${row.rowA.match(/\d+/g)}`)
           }, i * 1500)
         })
       }
