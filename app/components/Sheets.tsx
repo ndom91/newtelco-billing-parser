@@ -6,6 +6,7 @@ import {
   getColumnRange,
   getMultipleColumns,
   compareArrays,
+  comparePrices,
 } from '../utils/matrix'
 
 const DEBUG = true
@@ -27,7 +28,7 @@ const Sheets = () => {
       sheets.spreadsheets.values.get(
         {
           spreadsheetId: process.env.SHEET_ID,
-          range: `${masterValue}!A2:I`,
+          range: `${masterValue}!A2:BT`,
         },
         (err, res) => {
           if (err) {
@@ -136,10 +137,29 @@ const Sheets = () => {
         dateData = removeNonArrays(rawData)
       }
       const monthValue = dayjs(dateData[0][0]).format('MMM/YY')
-      console.log(monthValue, dateData.length)
       const val = Array(dateData.length).fill([monthValue])
-      console.log(val)
-      updateCellRange(val, `AB2:AB${dateData.length + 1}`)
+      // Step 2.1 - Write Date Value to Column
+      if (!DEBUG) {
+        updateCellRange(val, `AB2:AB${dateData.length + 1}`)
+      }
+
+      // Step 3 - Match i.e. 'May/20' Netto Preis vom masterdata BD to inputData J (Nettobetrag)
+      const inputDataNetto = getMultipleColumns(newData, ['J', 'V'])
+      const masterDataNetto = getMultipleColumns(master, ['BD', 'C']) // TODO: dynamically find column 'May/20'
+
+      // Step 4 - Copy prices from Masterdata to input field
+
+      // Step 5 - Write Mismatched Prices to Inputdata AD
+      const mismatchedPrices = comparePrices(inputDataNetto, masterDataNetto)
+      console.log(mismatchedPrices)
+
+      if (DEBUG) {
+        mismatchedPrices.forEach((row, i) => {
+          setTimeout(() => {
+            updateOneCell(row.priceB, `AC${row.rowA.match(/\d+/g)}`)
+          }, i * 1500)
+        })
+      }
 
       // Step X - Return
       setWorking(false)

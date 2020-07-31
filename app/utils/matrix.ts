@@ -9,7 +9,15 @@ export const getColumn = (array, column) => {
 export const getMultipleColumns = (array, columns) => {
   const returnArr = []
   columns.forEach((column, y) => {
-    const columnNum = column.toUpperCase().charCodeAt(0) - 65
+    let columnNum
+    if (column.length === 1) {
+      columnNum = column.toUpperCase().charCodeAt(0) - 65
+    } else if (column.length === 2) {
+      columnNum = column.toUpperCase().charCodeAt(0) - 65
+      columnNum = (columnNum + 1) * 26
+      columnNum += column.toUpperCase().charCodeAt(1) - 65
+    }
+
     array.map((e, i) => {
       if (y === 0) returnArr.push([])
       const val = e[columnNum]
@@ -58,6 +66,36 @@ export const compareArrays = (inputA, inputB) => {
         sNr: row[1],
         row: rowNr,
       })
+    }
+  })
+  return returnArr
+}
+
+export const comparePrices = (inputA, inputB) => {
+  const returnArr = []
+  inputB.forEach(row => {
+    // const rowNr = row.pop()
+
+    // find matching Rack
+    const matchingRooms = inputA.find(el => {
+      if (typeof el[0] !== 'string') return false
+      if (typeof row[0] !== 'string') return false
+      const inputARoom = el[1].trim()
+      const inputBRoom = row[1].trim()
+      return inputARoom === inputBRoom
+    })
+
+    if (matchingRooms) {
+      const inputAPrice = matchingRooms[0].replace('€', '').trim()
+      const inputBPrice = row[0].trim()
+
+      if (inputAPrice !== inputBPrice) {
+        returnArr.push({
+          priceA: inputAPrice,
+          priceB: inputBPrice,
+          rowA: matchingRooms[2],
+        })
+      }
     }
   })
   return returnArr
