@@ -3,6 +3,10 @@
 [Itenos Masterdata Sheet](https://docs.google.com/spreadsheets/d/1zA4HA3DCceRFqEIwkTTITGjxxEr8QaIDhRrEwFeKR2s/edit#gid=688542946)
 [Sheets API Node Docs](https://googleapis.dev/nodejs/googleapis/latest/sheets/classes/Sheets.html)
 
+### Todo
+
+- Test [sheetsql](https://github.com/joway/sheetsql)
+
 ## Install
 
 First, clone the repo via git and install dependencies:
