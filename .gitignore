@@ -54,3 +54,4 @@ npm-debug.log.*
 
 # Service Account
 serviceacct.json
+sheetsql.json

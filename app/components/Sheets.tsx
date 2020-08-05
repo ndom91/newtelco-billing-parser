@@ -1,23 +1,39 @@
 import React, { useState } from 'react'
 import path from 'path'
 import dayjs from 'dayjs'
+import Database from 'sheetsql'
 import styles from './Sheets.css'
 import {
   getColumnRange,
   getMultipleColumns,
-  compareArrays,
+  getMultipleColumnsByName,
+  compareArraysByName,
   comparePrices,
   getMasterPrices,
+  // compareArrays,
 } from '../utils/matrix'
 
-const DEBUG = false
+const DEBUG = true
+
+const masterDataSql = new Database({
+  db: '1CdJvSZStmBWguE6ij9D2sKGJ40CK3vie5-mwhN4CFY8',
+  table: 'MD - master data',
+  keyFile: './sheetsql.json',
+  cacheTimeoutMs: 5000, // optional, default = 5000
+})
+const newDataSql = new Database({
+  db: '1CdJvSZStmBWguE6ij9D2sKGJ40CK3vie5-mwhN4CFY8',
+  table: 'Itenos.Inv 05.2020-25R61617.csv',
+  keyFile: './sheetsql.json',
+  cacheTimeoutMs: 5000, // optional, default = 5000
+})
 
 const { google } = require('googleapis')
 const { GoogleAuth } = require('google-auth-library')
 
-const sleep = milliseconds => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
-}
+/* const sleep = milliseconds => { */
+/*   return new Promise(resolve => setTimeout(resolve, milliseconds)) */
+/* } */
 const auth = new GoogleAuth({
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 })
@@ -27,40 +43,40 @@ const Sheets = () => {
   const [working, setWorking] = useState(false)
   const [masterValue, setMasterValue] = useState('MD - master data')
   const [newValue, setNewValue] = useState('')
-  const getMasterData = async () => {
-    return new Promise((resolve, reject) =>
-      sheets.spreadsheets.values.get(
-        {
-          spreadsheetId: process.env.SHEET_ID,
-          range: `${masterValue}!A2:BT`,
-        },
-        (err, res) => {
-          if (err) {
-            console.error(err)
-            reject(err)
-          }
-          resolve(res.data.values)
-        }
-      )
-    )
-  }
-  const getNewData = async () => {
-    return new Promise((resolve, reject) =>
-      sheets.spreadsheets.values.get(
-        {
-          spreadsheetId: process.env.SHEET_ID,
-          range: `${newValue}!A2:Y`,
-        },
-        (err, res) => {
-          if (err) {
-            console.error(err)
-            reject(err)
-          }
-          resolve(res.data.values)
-        }
-      )
-    )
-  }
+  /* const getMasterData = async () => { */
+  /*   return new Promise((resolve, reject) => */
+  /*     sheets.spreadsheets.values.get( */
+  /*       { */
+  /*         spreadsheetId: process.env.SHEET_ID, */
+  /*         range: `${masterValue}!A2:BT`, */
+  /*       }, */
+  /*       (err, res) => { */
+  /*         if (err) { */
+  /*           console.error(err) */
+  /*           reject(err) */
+  /*         } */
+  /*         resolve(res.data.values) */
+  /*       } */
+  /*     ) */
+  /*   ) */
+  /* } */
+  /* const getNewData = async () => { */
+  /*   return new Promise((resolve, reject) => */
+  /*     sheets.spreadsheets.values.get( */
+  /*       { */
+  /*         spreadsheetId: process.env.SHEET_ID, */
+  /*         range: `${newValue}!A2:Y`, */
+  /*       }, */
+  /*       (err, res) => { */
+  /*         if (err) { */
+  /*           console.error(err) */
+  /*           reject(err) */
+  /*         } */
+  /*         resolve(res.data.values) */
+  /*       } */
+  /*     ) */
+  /*   ) */
+  /* } */
 
   const updateOneCell = async (value, cell) => {
     const spreadsheetId = process.env.SHEET_ID
@@ -102,37 +118,78 @@ const Sheets = () => {
   const compareValues = async () => {
     setWorking(true)
     try {
-      const master = await getMasterData()
-      const newData = await getNewData()
+      // const master = await getMasterData()
+      // const newData = await getNewData()
+      await newDataSql.load()
+      await masterDataSql.load()
+      const newData = await newDataSql.find({})
+      const masterData = await masterDataSql.find({})
 
       // Step 1.1 - Get Kunden Referenz + PO Nr. from New Month Sheet
-      const kundenReferenzNewSheet = getMultipleColumns(newData, ['Y', 'V'])
+      // const kundenReferenzNewSheet = getMultipleColumns(newData, ['Y', 'V'])
+      const kundenReferenzNewSheet = getMultipleColumnsByName(newData, [
+        'Zeile',
+        'Serien-Nr.',
+        'Kunden Referenz-Nr.',
+      ])
 
       // Step 1.2 - Get Kunden Ref + Po Nr. from Master Data
-      const poNrMasterData = getColumnRange(master, 'B:C')
+      // const poNrMasterData = getColumnRange(master, 'B:C')
+      const poNrMasterData = getMultipleColumnsByName(masterData, [
+        'NR.',
+        'PO NR', // Serien-Nr.
+        'Bestellung', // Kunden Referenz-Nr.
+      ])
 
       // Step 1.3 - Compare two last two
-      const leftOverValues = compareArrays(
+      // const leftOverValues = compareArrays(
+      const leftOverValues = compareArraysByName(
         poNrMasterData,
         kundenReferenzNewSheet
       )
+      console.log(leftOverValues)
 
       // Step 1.4 - Update input sheet
-      if (!DEBUG) {
-        leftOverValues.serienMismatch.forEach((row, i) => {
-          setTimeout(() => {
-            updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`)
-          }, i * 1500)
-        })
-        leftOverValues.missing.forEach((row, i) => {
-          setTimeout(() => {
-            updateOneCell(
-              `Missing in Master Data`,
-              `AA${row.row.match(/\d+/g)}`
-            )
-          }, i * 1500)
-        })
+      if (DEBUG) {
+        // leftOverValues.serienMismatch.forEach((row, i) => {
+        for await (const row of leftOverValues.serienMismatch) {
+          // for (let i = 0; i < leftOverValues.serienMismatch.length; i+1) {
+          // const row = leftOverValues.serienMismatch[i]
+          newDataSql.update(
+            {
+              Zeile: row.row,
+            },
+            {
+              Status: `Mismatch:${row.sNr} `,
+            }
+          )
+          /* setTimeout(() => { */
+          /*   updateOneCell(`Mismatch: ${row.sNr}`, `AA${row.row.match(/\d+/g)}`) */
+          /* }, i * 1500) */
+        }
+        // leftOverValues.missing.forEach((row, i) => {
+        for await (const row of leftOverValues.missing) {
+          // for (let i = 0; i < leftOverValues.missing.length; i+1) {
+          // const row = leftOverValues.missing[i]
+          newDataSql.update(
+            {
+              Zeile: row.row,
+            },
+            {
+              Status: 'Missing in Masterdata',
+            }
+          )
+          /* setTimeout(() => { */
+          /* updateOneCell( */
+          /*   `Missing in Master Data`, */
+          /*   `AA${row.row.match(/\d+/g)}` */
+          /* ) */
+          /* }, i * 1500) */
+        }
       }
+      // }
+      setWorking(false)
+      // return true
 
       // Step 2.0 - get Date from input sheet
       const rawData = getColumnRange(newData, 'N:O')

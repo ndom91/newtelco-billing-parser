@@ -31,6 +31,39 @@ export const getMultipleColumns = (array, columns) => {
   return returnArr
 }
 
+export const getMultipleColumnsByName = (array, columns) => {
+  const returnArr = []
+  array.forEach((row, i) => {
+    returnArr.push({})
+    columns.forEach(column => {
+      returnArr[i][column] = row[column]
+    })
+  })
+  return returnArr
+
+  // columns.forEach((column, y) => {
+  //   // let columnNum
+  //   // if (column.length === 1) {
+  //   //   columnNum = column.toUpperCase().charCodeAt(0) - 65
+  //   // } else if (column.length === 2) {
+  //   //   columnNum = column.toUpperCase().charCodeAt(0) - 65
+  //   //   columnNum = (columnNum + 1) * 26
+  //   //   columnNum += column.toUpperCase().charCodeAt(1) - 65
+  //   // }
+
+  //   array.map((e, i) => {
+  //     if (y === 0) returnArr.push([])
+  //     const val = e[column]
+  //     returnArr[i][y] = val
+  //     if (y + 1 === columns.length) {
+  //       returnArr[i][y + 1] = `${i + 2}`
+  //     }
+  //     return true
+  //   })
+  // })
+  // return returnArr
+}
+
 export const getColumnRange = (array, range) => {
   const start = range[0].toUpperCase().charCodeAt(0) - 65
   const end = range[2].toUpperCase().charCodeAt(0) - 65
@@ -42,6 +75,32 @@ export const getColumnRange = (array, range) => {
     return total
   })
   returnArr.splice(0, 4)
+  return returnArr
+}
+
+export const compareArraysByName = (inputA, inputB) => {
+  const returnArr = { missing: [], serienMismatch: [] }
+  inputB.forEach(row => {
+    const rowNr = row.Zeile
+    const returnVal = inputA.find(el => {
+      return el['PO NR'] === row['Serien-Nr.']
+    })
+    if (returnVal) {
+      if (returnVal.Bestellung !== row['Kunden Referenz-Nr.']) {
+        returnArr.serienMismatch.push({
+          kNr: row['Serien-Nr.'],
+          sNr: returnVal.Bestellung,
+          row: rowNr,
+        })
+      }
+    } else {
+      returnArr.missing.push({
+        kNr: row['Serien-Nr.'],
+        sNr: row['Kunden Referenz-Nr.'],
+        row: rowNr,
+      })
+    }
+  })
   return returnArr
 }
 
@@ -70,6 +129,7 @@ export const compareArrays = (inputA, inputB) => {
   })
   return returnArr
 }
+
 export const getMasterPrices = (inputA, inputB) => {
   const returnArr = []
   inputB.forEach(row => {
